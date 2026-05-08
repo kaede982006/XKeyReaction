@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XKeyReaction — Keyboard Reaction Time Test</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="stage" class="state-idle" tabindex="0" aria-live="polite">
+    <h1 class="title">XKeyReaction</h1>
+    <p id="prompt-key" class="prompt-key" aria-hidden="true">—</p>
+    <p id="message" class="message">Press any key to start.</p>
+    <p id="hint" class="hint">When the screen turns green and shows a key, press that key as fast as you can.</p>
+
+    <section id="result" class="result" hidden>
+        <div class="result-row">
+            <span class="result-label">Last</span>
+            <span id="last-time" class="result-value">— ms</span>
+        </div>
+        <div class="result-row">
+            <span class="result-label">Best</span>
+            <span id="best-time" class="result-value">— ms</span>
+        </div>
+        <div class="result-row">
+            <span class="result-label">Average</span>
+            <span id="avg-time" class="result-value">— ms</span>
+        </div>
+        <div class="result-row">
+            <span class="result-label">Round</span>
+            <span id="attempts" class="result-value">0 / 10</span>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Licensed under <a href="LICENSE">GNU GPL v3.0</a> · Font: Zeequada</p>
+    </footer>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
