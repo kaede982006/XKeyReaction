@@ -137,7 +137,7 @@
             state = STATE.GO;
             setStateClass("go");
             promptEl.textContent = "PRESS";
-            messageEl.textContent = "Press any key!";
+            messageEl.textContent = "Press, click, or tap!";
             hintEl.textContent = "";
             goTimestamp = performance.now();
         }, delay);
@@ -149,7 +149,7 @@
         setStateClass("fail");
         promptEl.textContent = "✕";
         messageEl.textContent = reason;
-        hintEl.textContent = `${detail} Press any key to start over from round 1.`;
+        hintEl.textContent = `${detail} Press, click, or tap to start over from round 1.`;
         resetSession();
     }
 
@@ -164,13 +164,13 @@
             setStateClass("done");
             promptEl.textContent = `${avg.toFixed(0)} ms avg`;
             messageEl.textContent = `Session complete — best ${best.toFixed(0)} ms.`;
-            hintEl.textContent = "Press any key to start a new 10-round session.";
+            hintEl.textContent = "Press, click, or tap to start a new 10-round session.";
         } else {
             state = STATE.RESULT;
             setStateClass("result");
             promptEl.textContent = `${ms.toFixed(0)} ms`;
             messageEl.textContent = `Round ${times.length} of ${ROUNDS_PER_SESSION} done.`;
-            hintEl.textContent = "Press any key for the next round.";
+            hintEl.textContent = "Press, click, or tap for the next round.";
         }
     }
 
@@ -216,14 +216,33 @@
         }
     });
 
-    // Click anywhere to also advance — useful on touch devices, though the
-    // primary input is the keyboard.
-    stage.addEventListener("click", () => {
-        if (state === STATE.IDLE)                                  beginSession();
-        else if (state === STATE.RESULT)                           startRound();
-        else if (state === STATE.FAIL || state === STATE.DONE)     beginSession();
-        else if (state === STATE.WAIT)
-            failSession("Too soon!", "You clicked before the green screen.");
+    // Mouse, touch, and pen input — pointerdown fires earlier than click and
+    // covers all three with one listener.
+    stage.addEventListener("pointerdown", (e) => {
+        // Don't hijack genuine UI clicks (e.g. the LICENSE link in the footer).
+        if (e.target.closest("a")) return;
+        e.preventDefault();
+
+        switch (state) {
+            case STATE.IDLE:
+                beginSession();
+                break;
+            case STATE.RESULT:
+                startRound();
+                break;
+            case STATE.FAIL:
+            case STATE.DONE:
+                beginSession();
+                break;
+            case STATE.WAIT:
+                failSession("Too soon!", "You pressed before the green screen.");
+                break;
+            case STATE.GO: {
+                const ms = performance.now() - goTimestamp;
+                finishRound(ms);
+                break;
+            }
+        }
     });
 
     // Make sure the body has focus so keys are received reliably.

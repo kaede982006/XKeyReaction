@@ -36,6 +36,10 @@ body {
     cursor: pointer;
     transition: background-color 0.08s ease, color 0.08s ease;
     outline: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 #stage.state-idle    { background: #1a1a1a; color: #f0f0f0; }
