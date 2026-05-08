@@ -82,7 +82,6 @@
         DONE:   "done",   // purple — 10 rounds completed
     };
     let state       = STATE.IDLE;
-    let targetCode  = null;
     let goTimestamp = 0;
     let waitTimer   = null;
 
@@ -96,10 +95,6 @@
             "state-early","state-fail","state-done"
         );
         stage.classList.add("state-" + s);
-    }
-
-    function pickTarget() {
-        return TARGET_POOL[Math.floor(Math.random() * TARGET_POOL.length)];
     }
 
     function refreshStats() {
@@ -131,7 +126,6 @@
     function startRound() {
         clearTimeout(waitTimer);
         state = STATE.WAIT;
-        targetCode = pickTarget();
         setStateClass("wait");
         promptEl.textContent = "•••";
         messageEl.textContent = `Round ${times.length + 1} of ${ROUNDS_PER_SESSION} — wait for green…`;
@@ -142,8 +136,8 @@
         waitTimer = setTimeout(() => {
             state = STATE.GO;
             setStateClass("go");
-            promptEl.textContent = displayFor(targetCode);
-            messageEl.textContent = "Press it!";
+            promptEl.textContent = "PRESS";
+            messageEl.textContent = "Press any key!";
             hintEl.textContent = "";
             goTimestamp = performance.now();
         }, delay);
@@ -214,17 +208,11 @@
                 failSession("Too soon!", "You pressed before the green screen.");
                 break;
 
-            case STATE.GO:
-                if (e.code === targetCode) {
-                    const ms = performance.now() - goTimestamp;
-                    finishRound(ms);
-                } else {
-                    failSession(
-                        "Wrong key!",
-                        `Expected ${displayFor(targetCode)}, got ${displayFor(e.code)}.`
-                    );
-                }
+            case STATE.GO: {
+                const ms = performance.now() - goTimestamp;
+                finishRound(ms);
                 break;
+            }
         }
     });
 
